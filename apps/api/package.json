@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "jest": {
+    "setupFiles": ["dotenv/config"]
+  },
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles",
     "dev": "node --watch src/server.js",
@@ -13,6 +16,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^5.2.1"
   },
   "devDependencies": {
