@@ -145,3 +145,6 @@ vite.config.ts.timestamp-*
 # Turbo caches
 
 .turbo/
+
+# Prisma related
+packages/database/generated
