@@ -1,0 +1,21 @@
+.playArea{
+  /* display: flex; */
+  /* position: relative; */
+}
+
+.imageContainer{
+  width: 1600px;
+  height: auto;
+  position: relative;
+}
+
+.popUpBox{
+  display: flex;
+  position: absolute;
+}
+
+.targetingBox{
+  width: 20px;
+  height: 20px;
+  background-color: red;
+}
