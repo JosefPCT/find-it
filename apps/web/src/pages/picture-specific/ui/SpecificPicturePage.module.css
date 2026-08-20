@@ -1,3 +1,17 @@
+/* (middle (screw) of a blue cutter) */
+.testTag{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: green;
+
+  z-index: 2;
+
+  /* CRITICAL: Centers the marker directly over the exact pixel coordinate */
+  transform: translate(-50%, -50%); 
+}
+
+
 .playArea{
   /* display: flex; */
   /* position: relative; */
@@ -7,15 +21,26 @@
   width: 1600px;
   height: auto;
   position: relative;
+  display: inline-block;
+  /* width: 100%; */
 }
 
 .popUpBox{
   display: flex;
   position: absolute;
+
+  background-color: white;
+  /* transform: translate(-50%, -50%); */
 }
 
 .targetingBox{
   width: 20px;
   height: 20px;
   background-color: red;
+
+  transform: translate(-50%, -50%);
+}
+
+.selectionContainer{
+ 
 }
