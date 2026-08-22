@@ -5,7 +5,7 @@
   height: 20px;
   background-color: green;
 
-  z-index: 2;
+  /* z-index: 2; */
 
   /* CRITICAL: Centers the marker directly over the exact pixel coordinate */
   transform: translate(-50%, -50%); 

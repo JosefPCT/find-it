@@ -13,6 +13,13 @@ export default function SpecificPicturePage(){
 
   // Testing, (middle (screw) of a blue cutter)
   const defaultImageSize = { width: 1600, height: 1403}
+
+  const testTags = [
+    { name: 'cellphone', coords: { x: 865, y: 290}},
+    { name: 'lightbulb', coords: { x: 1396, y: 604}}
+  ]
+
+
   const testTagCoords = { x: 1314, y: 755}
   const testTagPercentage = { x: (testTagCoords.x / defaultImageSize.width) * 100, y: (testTagCoords.y / defaultImageSize.height) * 100}
 
@@ -67,6 +74,9 @@ export default function SpecificPicturePage(){
     console.log("Validating...");
     console.log(userChoice);
 
+    const targetTag = testTags.find(tag => tag.name === userChoice)
+    
+
     console.log("User clicked coordinates:");
     console.log(`X: ${userClickCoords.x}, Y: ${userClickCoords.y}`);
 
@@ -75,7 +85,6 @@ export default function SpecificPicturePage(){
       topRight: { x: userClickCoords.x + 10, y: userClickCoords.y - 10},
       bottomLeft: {x: userClickCoords.x - 10, y: userClickCoords.y + 10},
       bottomRight: {x: userClickCoords.x + 10, y: userClickCoords.y + 10}
-
     }
 
     console.log(`Top Left: x: ${targetingBoxCoords.topLeft.x}, y: ${targetingBoxCoords.topLeft.y}`);
@@ -94,13 +103,13 @@ export default function SpecificPicturePage(){
     let hit = false;
     console.log(`${targetingBoxCoords.topLeft.x} < ${testTagCoords.x} < ${targetingBoxCoords.topRight.x}`)
     console.log(`${targetingBoxCoords.topLeft.y} < ${testTagCoords.y} < ${targetingBoxCoords.topRight.y}`)  
-    if((targetingBoxCoords.topLeft.x <= testTagCoords.x && testTagCoords.x <= targetingBoxCoords.topRight.x) &&
-      (targetingBoxCoords.bottomLeft.x <= testTagCoords.x && testTagCoords.x <= targetingBoxCoords.bottomRight.x)
+    if((targetingBoxCoords.topLeft.x <= targetTag.coords.x && targetTag.coords.x <= targetingBoxCoords.topRight.x) &&
+      (targetingBoxCoords.bottomLeft.x <= targetTag.coords.x && targetTag.coords.x <= targetingBoxCoords.bottomRight.x)
       ){
       console.log("HIT!");
     }
-    if(((targetingBoxCoords.topLeft.y <= testTagCoords.y && testTagCoords.y <= targetingBoxCoords.topRight.y)) &&
-        (targetingBoxCoords.bottomLeft.y <= testTagCoords.y && testTagCoords.y <= targetingBoxCoords.bottomLeft.y)){
+    if(((targetingBoxCoords.topLeft.y <= targetTag.coords.y && targetTag.coords.y <= targetingBoxCoords.topRight.y)) &&
+        (targetingBoxCoords.bottomLeft.y <= targetTag.coords.y && targetTag.coords.y <= targetingBoxCoords.bottomLeft.y)){
       console.log("Hit 2!!");      
     }
     // if(targetingBoxCoords.topLeft.x < testTagCoords.x &&  testTagCoords.x < targetingBoxCoords.topRight.x){
@@ -126,6 +135,9 @@ export default function SpecificPicturePage(){
             <div className={styles.errorMsg}>Not quite!</div>
             <div className={styles.successMsg}>You got it!</div>
           </div>
+          { testTags.map(tag => {
+            return <div className={styles.testTag} style={{ top: `${(tag.coords.y / defaultImageSize.height) * 100}%`, left: `${(tag.coords.x / defaultImageSize.width) * 100}%` }} onClick={testTagEventHandler}></div>
+          })}
           <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div>
           <img
             ref={imgRef}
