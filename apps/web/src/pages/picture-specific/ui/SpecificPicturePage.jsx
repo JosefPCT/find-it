@@ -4,6 +4,7 @@ import styles from "./SpecificPicturePage.module.css";
 
 export default function SpecificPicturePage(){
 
+  // Defining of states
   const [userClickCoords, setUserClickCoords] = useState({x: 0, y: 0});
   const [showPopup, setShowPopup] = useState(false);
   const [currentUserChoice, setCurrentUserChoice] = useState(null);
@@ -23,6 +24,10 @@ export default function SpecificPicturePage(){
   const [userClickCoordsDecimal, setUserClickCoordsDecimal] = useState({x: 0, y: 0});
   // const [boundingRect, setBoundingRect] = useState({});
 
+  // Set the state when user clicks on the image
+  // Includes getting the `pageX` and `pageY` from the event object
+  // And gets the BoundingRect of the image (width, height, top, left etc..)
+  // Sets the decimal value of the coordinates by dividing the coordinate with the current width/height
   const imageClickHandler = (e) => {
     if(imgRef.current){
       const rect = imgRef.current.getBoundingClientRect();
@@ -49,12 +54,15 @@ export default function SpecificPicturePage(){
     imageClickHandler(e);
   }
 
+  // Handler to keep track of the user selection by updating the state or passing it directly to the validation function
   const selectOnChangeHandler = (e) => {
     console.log("Selected: ", e.target.value);
     validate(e.target.value);
   }
 
-
+  // Todo: integrate backend fetching for the tag and its coordinates, will replace the `testTagCoords` object with the returned value
+  // The main function to check if the user clicked around the correct area
+  // Gets the points of the current targeting box to use for validation, accounts for how big the box is
   const validate = (userChoice) => {
     console.log("Validating...");
     console.log(userChoice);
