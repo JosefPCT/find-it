@@ -12,7 +12,27 @@ datasource db {
   provider = "postgresql"
 }
 
-model Picture {
-  id  Int  @id @default(autoincrement())
-  name  String
+model Image {
+  id             Int    @id @default(autoincrement())
+  publicId       String @unique @default(uuid()) @map("public_id") @db.Uuid
+  name           String
+  url            String
+  OriginalWidth  Int    @map("original_width")
+  OriginalHeight Int    @map("original_height")
+  additionalInfo String? @map("additional_info")
+  tags           Tag[]
+
+  @@map("images")
+}
+
+model Tag {
+  id          Int    @id @default(autoincrement())
+  imageId     Int    @map("image_id")
+  parentImage Image  @relation(fields: [imageId], references: [id])
+  publicId    String @unique @default(uuid()) @map("public_id") @db.Uuid
+  name        String
+  x           Int
+  y           Int
+
+  @@map("tags")
 }

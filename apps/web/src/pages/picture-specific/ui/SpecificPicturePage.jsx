@@ -35,7 +35,11 @@ export default function SpecificPicturePage(){
   // Includes getting the `pageX` and `pageY` from the event object
   // And gets the BoundingRect of the image (width, height, top, left etc..)
   // Sets the decimal value of the coordinates by dividing the coordinate with the current width/height
-  const imageClickHandler = (e) => {
+  const imageClickHandler = (e, value) => {
+
+    console.log("Testing passed value from another event handler");
+    console.log(value);
+
     if(imgRef.current){
       const rect = imgRef.current.getBoundingClientRect();
       console.log(rect);
@@ -58,7 +62,7 @@ export default function SpecificPicturePage(){
 
   const testTagEventHandler = (e) => {
     console.log("Test tag event handler triggered...");
-    imageClickHandler(e);
+    imageClickHandler(e, "testValuehere");
   }
 
   // Handler to keep track of the user selection by updating the state or passing it directly to the validation function
