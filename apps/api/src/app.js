@@ -9,7 +9,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false}));
 app.use(express.json());
 
-app.use("/", apiRouter);
+app.use("/api/v1", apiRouter);
 app.use(notFoundErrorHandler);
 app.use(globalErrorHandler)
 
