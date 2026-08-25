@@ -1,5 +1,6 @@
 import * as imageService from "./images-service.js";
 
+
 export const postImagesRoute = [
   async(req, res) => {
     res.status(200).json({message: 'POST images route'});
@@ -15,6 +16,9 @@ export const getImagesRoute = [
 
 export const getSpecificImageRoute = [
   async(req, res) => {
-    res.status(200).json({message: 'Specific Image Route'})
+    const imagePublicId = req.params.imagePublicId;
+    const result = await imageService.getSpecificImage(imagePublicId);
+    // res.status(200).json({message: `Specific Image Route: ${imagePublicId}`})
+    res.status(200).json(result);
   }
 ]

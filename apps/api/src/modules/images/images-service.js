@@ -11,3 +11,13 @@ export const getAllImages = async() => {
     throw error;
   }
 }
+
+export const getSpecificImage = async(publicId) => {
+  try {
+    const image = await imageQueries.fetchSpecificImage(publicId);
+    return image;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

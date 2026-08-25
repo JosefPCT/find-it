@@ -37,6 +37,7 @@ export default function SpecificPicturePage(){
   // Sets the decimal value of the coordinates by dividing the coordinate with the current width/height
   const imageClickHandler = (e, value) => {
 
+    // Test to pass a value from another handler to possibly skip some steps
     console.log("Testing passed value from another event handler");
     console.log(value);
 
