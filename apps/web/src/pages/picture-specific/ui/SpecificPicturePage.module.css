@@ -18,10 +18,12 @@
 }
 
 .imageContainer{
-  width: 1600px;
-  height: auto;
+  /* width: 1600px; */
+  /* height: auto; */
   position: relative;
   display: inline-block;
+  object-fit: cover;
+
   /* width: 100%; */
 }
 

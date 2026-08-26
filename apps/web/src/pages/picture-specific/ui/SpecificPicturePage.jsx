@@ -1,8 +1,19 @@
 import { useRef, useState } from "react"
+import { useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+
+import fetchSpecificImage from "../api/fetchSpecificImage";
 
 import styles from "./SpecificPicturePage.module.css";
 
+
 export default function SpecificPicturePage(){
+  const { pictureId } = useParams();
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['specificImage', pictureId], 
+    queryFn: () => fetchSpecificImage(pictureId)
+  })
 
   // Defining of states
   const [userClickCoords, setUserClickCoords] = useState({x: 0, y: 0});
@@ -79,7 +90,7 @@ export default function SpecificPicturePage(){
     console.log("Validating...");
     console.log(userChoice);
 
-    const targetTag = testTags.find(tag => tag.name === userChoice)
+    const targetTag = data.tags.find(tag => tag.name === userChoice)
     
 
     console.log("User clicked coordinates:");
@@ -106,20 +117,32 @@ export default function SpecificPicturePage(){
     // The actual validation of coordinates
 
     let hit = false;
-    console.log(`${targetingBoxCoords.topLeft.x} < ${testTagCoords.x} < ${targetingBoxCoords.topRight.x}`)
-    console.log(`${targetingBoxCoords.topLeft.y} < ${testTagCoords.y} < ${targetingBoxCoords.topRight.y}`)  
-    if((targetingBoxCoords.topLeft.x <= targetTag.coords.x && targetTag.coords.x <= targetingBoxCoords.topRight.x) &&
-      (targetingBoxCoords.bottomLeft.x <= targetTag.coords.x && targetTag.coords.x <= targetingBoxCoords.bottomRight.x)
+    console.log(`${targetingBoxCoords.topLeft.x} < ${targetTag.x} < ${targetingBoxCoords.topRight.x}`)
+    console.log(`${targetingBoxCoords.bottomLeft.x} < ${targetTag.x} < ${targetingBoxCoords.bottomRight.x}`)
+    console.log(`${targetingBoxCoords.topLeft.y} < ${targetTag.y} < ${targetingBoxCoords.bottomLeft.y}`)  
+    console.log(`${targetingBoxCoords.topRight.y} < ${targetTag.y} < ${targetingBoxCoords.bottomRight.y}`)
+    
+    if((targetingBoxCoords.topLeft.x <= targetTag.x && targetTag.x <= targetingBoxCoords.topRight.x) &&
+      (targetingBoxCoords.bottomLeft.x <= targetTag.x && targetTag.x <= targetingBoxCoords.bottomRight.x)
       ){
       console.log("HIT!");
     }
-    if(((targetingBoxCoords.topLeft.y <= targetTag.coords.y && targetTag.coords.y <= targetingBoxCoords.topRight.y)) &&
-        (targetingBoxCoords.bottomLeft.y <= targetTag.coords.y && targetTag.coords.y <= targetingBoxCoords.bottomLeft.y)){
+    if(((targetingBoxCoords.topLeft.y <= targetTag.y && targetTag.y <= targetingBoxCoords.bottomLeft.y)) &&
+        (targetingBoxCoords.topRight.y <= targetTag.y && targetTag.y <= targetingBoxCoords.bottomRight.y)){
       console.log("Hit 2!!");      
     }
     // if(targetingBoxCoords.topLeft.x < testTagCoords.x &&  testTagCoords.x < targetingBoxCoords.topRight.x){
     //   console.log("HIT!!!!")
     // }
+  }
+
+
+  if(isPending){
+    return <span>Image is loading...</span>
+  }
+
+  if(isError){
+    return <span>Error: {error.message}</span>
   }
 
   return(
@@ -132,21 +155,27 @@ export default function SpecificPicturePage(){
               <label htmlFor="possibleElement">Which element is here?</label>
               <select name="possibleElement" id="possibleElement" onChange={selectOnChangeHandler}>
                 <option value="">Choose...</option>
-                <option value="lightbulb">Lightbulb</option>
+                {data.tags.map(tag => {
+                  return <option value={tag.name}>{tag.name}</option>
+                })}
+
+                {/* <option value="lightbulb">Lightbulb</option>
                 <option value="cellphone">Cellphone</option>
-                <option value="sunglasses">Sunglasses</option>
+                <option value="sunglasses">Sunglasses</option> */}
               </select>
             </div>
             <div className={styles.errorMsg}>Not quite!</div>
             <div className={styles.successMsg}>You got it!</div>
           </div>
-          { testTags.map(tag => {
-            return <div className={styles.testTag} style={{ top: `${(tag.coords.y / defaultImageSize.height) * 100}%`, left: `${(tag.coords.x / defaultImageSize.width) * 100}%` }} onClick={testTagEventHandler}></div>
+          { data.tags.map(tag => {
+            return <div className={styles.testTag} style={{ top: `${(tag.y / data.OriginalHeight) * 100}%`, left: `${(tag.x / data.OriginalWidth) * 100}%` }} onClick={testTagEventHandler}></div>
           })}
-          <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div>
+          {/* <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div> */}
           <img
             ref={imgRef}
-            src="https://media.istockphoto.com/id/171114507/photo/junk-in-a-drawer.jpg?s=2048x2048&w=is&k=20&c=xMyVLa4tCppHkovgkUMYtNEVXGEKRv141LUlrU5S4zk=" 
+            src={data.url}
+            width={data.OriginalWidth}
+            height={data.OriginalHeight} 
             alt="Picture of different things"
             onClick={imageClickHandler}
           />
@@ -159,6 +188,20 @@ export default function SpecificPicturePage(){
         <p>User Click Coordinates: X: {userClickCoords.x}, Y: {userClickCoords.y}</p>
         <p>Showing Popup? {showPopup ? "true" : "false"}</p>
         <p>User Click Coordinates: X: {userClickCoordsDecimal.x}, Y: {userClickCoordsDecimal.y}</p>
+        <p>User Params: URL: {pictureId}</p>
+        <p>Data Fetching:</p>
+        <p>{data.name}</p>
+        {data.tags.map((tag) => {
+          return(
+            <>
+              <div>{tag.name}</div>
+              <div>{tag.x}</div>
+            </>
+          )
+        })}
+      </div>
+      <div>
+        <img src={data.url} alt="" />
       </div>
     </div>
   )

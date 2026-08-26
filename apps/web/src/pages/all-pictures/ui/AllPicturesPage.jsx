@@ -27,6 +27,7 @@ export default function AllPicturesPage(){
           return (
             <>
               <div>{image.name}</div>
+              <div><NavLink to={`/pictures/${image.publicId}`}>To Image</NavLink></div>
               <div>{image.publicId}</div>
               <img src={image.url} alt="Test pic" />
             </>
