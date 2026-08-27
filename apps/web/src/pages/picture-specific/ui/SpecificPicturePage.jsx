@@ -19,27 +19,14 @@ export default function SpecificPicturePage(){
   const [userClickCoords, setUserClickCoords] = useState({x: 0, y: 0});
   const [showPopup, setShowPopup] = useState(false);
   const [currentUserChoice, setCurrentUserChoice] = useState(null);
+  const [foundElements, setFoundElements] = useState([]);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const imgRef = useRef(null);
 
-  // Testing, (middle (screw) of a blue cutter)
-  const defaultImageSize = { width: 1600, height: 1403}
-
-  const testTags = [
-    { name: 'cellphone', coords: { x: 865, y: 290}},
-    { name: 'lightbulb', coords: { x: 1396, y: 604}}
-  ]
-
-
-  const testTagCoords = { x: 1314, y: 755}
-  const testTagPercentage = { x: (testTagCoords.x / defaultImageSize.width) * 100, y: (testTagCoords.y / defaultImageSize.height) * 100}
-
-  console.log("Test tag console:");
-  console.log(testTagPercentage.x);
-  console.log(testTagPercentage.y)
-
   // Testing normalizing of coordinates
-  const [userClickCoordsDecimal, setUserClickCoordsDecimal] = useState({x: 0, y: 0});
+  //const [userClickCoordsDecimal, setUserClickCoordsDecimal] = useState({x: 0, y: 0});
   // const [boundingRect, setBoundingRect] = useState({});
 
   // Set the state when user clicks on the image
@@ -65,10 +52,12 @@ export default function SpecificPicturePage(){
     console.log(e.pageY);
     setUserClickCoords({x: e.pageX, y: e.pageY});
     setShowPopup(prev => !prev);
+    setShowErrorMessage(false);
+    setShowSuccessMessage(false);
+    
 
     // Testing normalizing of coordinates
-    setUserClickCoordsDecimal({x: (e.pageX / rect.width), y: (e.pageY / rect.height) });
-    
+    // setUserClickCoordsDecimal({x: (e.pageX / rect.width), y: (e.pageY / rect.height) });
     }
   }
 
@@ -80,6 +69,8 @@ export default function SpecificPicturePage(){
   // Handler to keep track of the user selection by updating the state or passing it directly to the validation function
   const selectOnChangeHandler = (e) => {
     console.log("Selected: ", e.target.value);
+    setShowErrorMessage(false);
+    setShowSuccessMessage(false);
     validate(e.target.value);
   }
 
@@ -125,15 +116,17 @@ export default function SpecificPicturePage(){
     if((targetingBoxCoords.topLeft.x <= targetTag.x && targetTag.x <= targetingBoxCoords.topRight.x) &&
       (targetingBoxCoords.bottomLeft.x <= targetTag.x && targetTag.x <= targetingBoxCoords.bottomRight.x)
       ){
-      console.log("HIT!");
-    }
-    if(((targetingBoxCoords.topLeft.y <= targetTag.y && targetTag.y <= targetingBoxCoords.bottomLeft.y)) &&
+      if(((targetingBoxCoords.topLeft.y <= targetTag.y && targetTag.y <= targetingBoxCoords.bottomLeft.y)) &&
         (targetingBoxCoords.topRight.y <= targetTag.y && targetTag.y <= targetingBoxCoords.bottomRight.y)){
-      console.log("Hit 2!!");      
+        console.log("Hit 2!!");    
+        setFoundElements(prev => [...prev, targetTag.publicId])
+        setShowSuccessMessage(true);
+      } 
+    } else {
+      setShowErrorMessage(true);
     }
-    // if(targetingBoxCoords.topLeft.x < testTagCoords.x &&  testTagCoords.x < targetingBoxCoords.topRight.x){
-    //   console.log("HIT!!!!")
-    // }
+
+    
   }
 
 
@@ -156,7 +149,7 @@ export default function SpecificPicturePage(){
               <select name="possibleElement" id="possibleElement" onChange={selectOnChangeHandler}>
                 <option value="">Choose...</option>
                 {data.tags.map(tag => {
-                  return <option value={tag.name}>{tag.name}</option>
+                  return foundElements.includes(tag.publicId) ? <option value={tag.name} disabled>{tag.name}</option> : <option value={tag.name}>{tag.name}</option>
                 })}
 
                 {/* <option value="lightbulb">Lightbulb</option>
@@ -164,11 +157,11 @@ export default function SpecificPicturePage(){
                 <option value="sunglasses">Sunglasses</option> */}
               </select>
             </div>
-            <div className={styles.errorMsg}>Not quite!</div>
-            <div className={styles.successMsg}>You got it!</div>
+            { showSuccessMessage ? <div className={styles.successMsg}>You're guess is correct!</div> : ""}
+            { showErrorMessage ? <div className={styles.errorMsg}> Not quite</div> : ""}
           </div>
           { data.tags.map(tag => {
-            return <div className={styles.testTag} style={{ top: `${(tag.y / data.OriginalHeight) * 100}%`, left: `${(tag.x / data.OriginalWidth) * 100}%` }} onClick={testTagEventHandler}></div>
+            return foundElements.includes(tag.publicId) ? <div className={styles.testTag} style={{ top: `${(tag.y / data.OriginalHeight) * 100}%`, left: `${(tag.x / data.OriginalWidth) * 100}%` }} onClick={testTagEventHandler}></div> : ""
           })}
           {/* <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div> */}
           <img
@@ -187,7 +180,10 @@ export default function SpecificPicturePage(){
         Test 
         <p>User Click Coordinates: X: {userClickCoords.x}, Y: {userClickCoords.y}</p>
         <p>Showing Popup? {showPopup ? "true" : "false"}</p>
-        <p>User Click Coordinates: X: {userClickCoordsDecimal.x}, Y: {userClickCoordsDecimal.y}</p>
+        {/* <p>User Click Coordinates: X: {userClickCoordsDecimal.x}, Y: {userClickCoordsDecimal.y}</p> */}
+        {foundElements.map((elem) => {
+          return <div>{elem}</div>
+        })}
         <p>User Params: URL: {pictureId}</p>
         <p>Data Fetching:</p>
         <p>{data.name}</p>
