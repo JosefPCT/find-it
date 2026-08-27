@@ -163,6 +163,14 @@ export default function SpecificPicturePage(){
           { data.tags.map(tag => {
             return foundElements.includes(tag.publicId) ? <div className={styles.testTag} style={{ top: `${(tag.y / data.OriginalHeight) * 100}%`, left: `${(tag.x / data.OriginalWidth) * 100}%` }} onClick={testTagEventHandler}></div> : ""
           })}
+          <div className={styles.elementsList}>
+            <p>Elements to find:</p>
+            <ul>
+              {data.tags.map((tag) => {
+                return foundElements.includes(tag.publicId) ? <li><s>{tag.name}</s></li> : <li>{tag.name}</li>
+              })}
+            </ul>
+          </div>
           {/* <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div> */}
           <img
             ref={imgRef}
