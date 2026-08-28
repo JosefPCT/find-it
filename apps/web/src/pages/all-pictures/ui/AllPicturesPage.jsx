@@ -2,6 +2,7 @@ import { NavLink } from "react-router";
 import { useQuery } from "@tanstack/react-query"
 
 import fetchAllPictures from "../api/fetchAllPictures";
+import ImageCarousel from "./ImageCarousel";
 
 export default function AllPicturesPage(){
 
@@ -21,6 +22,8 @@ export default function AllPicturesPage(){
   return(
     <>
       All Pictures Page
+      <ImageCarousel />
+
       <NavLink to='/pictures/test'>Test Picture</NavLink>
       <ul>
         { Array.isArray(data) && data.map((image) => {
