@@ -16,6 +16,24 @@ export default function SpecificPicturePage(){
     queryFn: () => fetchSpecificImage(pictureId)
   })
 
+
+  // Logic to check if user already found all tags
+  const checkWinner = (foundElements) => {
+    if(!data){
+      return false;
+    }
+
+    if(foundElements.length === data.tags.length){
+      console.log("Winner! Found all the elements!, Calculating score time...");
+      return true;
+    } else {
+      console.log("More elements to find");
+      console.log(foundElements.length)
+      console.log(data.tags.length);
+      return false;
+    }
+  }
+
   // Defining of states
   const [userClickCoords, setUserClickCoords] = useState({x: 0, y: 0});
   const [currentDimensions, setCurrentDimensions] = useState({width: 0, height: 0});
@@ -25,11 +43,22 @@ export default function SpecificPicturePage(){
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
+  const [isWinner, setIsWinner] = useState(false);
+
   
 
   // Testing normalizing of coordinates
   //const [userClickCoordsDecimal, setUserClickCoordsDecimal] = useState({x: 0, y: 0});
   // const [boundingRect, setBoundingRect] = useState({});
+
+  // UseEffect to check for winning conditions
+  useEffect(() => {
+    const winningCondition = checkWinner(foundElements);
+    if (winningCondition){
+      setIsWinner(prevState => winningCondition);
+    }
+  }, [foundElements])
+
 
   // UseEffect to handle image resizing whether from window resizing, css layoutshifts or content loads
   // useEffect(() => {
@@ -68,6 +97,11 @@ export default function SpecificPicturePage(){
   // And gets the BoundingRect of the image (width, height, top, left etc..)
   // Sets the decimal value of the coordinates by dividing the coordinate with the current width/height
   const imageClickHandler = (e, value) => {
+
+    if(isWinner){
+      console.log("you already won!");
+      return;
+    }
 
     // Test to pass a value from another handler to possibly skip some steps
     console.log("Testing passed value from another event handler");
@@ -165,7 +199,7 @@ export default function SpecificPicturePage(){
       setShowErrorMessage(true);
     }
 
-    
+    // isWinningCondition(data)
   }
 
 
