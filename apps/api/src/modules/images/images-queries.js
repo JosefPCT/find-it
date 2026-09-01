@@ -11,7 +11,8 @@ export const fetchSpecificImage = async(targetPublicId) => {
       publicId: targetPublicId
     },
     include: {
-      tags: true
+      tags: true,
+      scores: true
     }
   })
   return image;

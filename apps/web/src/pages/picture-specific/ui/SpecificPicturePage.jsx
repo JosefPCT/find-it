@@ -248,6 +248,15 @@ export default function SpecificPicturePage(){
               })}
             </ul>
           </div>
+
+          <div className={styles.scoreboard}>
+            <h4>Scores:</h4>
+            <ul>
+              {data.scores.map((score) => {
+                return <li>{score.name} : {score.finalTime}s</li>
+              })}
+            </ul>
+          </div>
           
           {/* <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div> */}
           <img
