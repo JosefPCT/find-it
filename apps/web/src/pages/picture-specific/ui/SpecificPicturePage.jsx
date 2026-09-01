@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 
@@ -9,6 +9,7 @@ import styles from "./SpecificPicturePage.module.css";
 
 export default function SpecificPicturePage(){
   const { pictureId } = useParams();
+  const imgRef = useRef(null);
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['specificImage', pictureId], 
@@ -17,17 +18,50 @@ export default function SpecificPicturePage(){
 
   // Defining of states
   const [userClickCoords, setUserClickCoords] = useState({x: 0, y: 0});
+  const [currentDimensions, setCurrentDimensions] = useState({width: 0, height: 0});
   const [showPopup, setShowPopup] = useState(false);
   const [currentUserChoice, setCurrentUserChoice] = useState(null);
   const [foundElements, setFoundElements] = useState([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
-  const imgRef = useRef(null);
+  
 
   // Testing normalizing of coordinates
   //const [userClickCoordsDecimal, setUserClickCoordsDecimal] = useState({x: 0, y: 0});
   // const [boundingRect, setBoundingRect] = useState({});
+
+  // UseEffect to handle image resizing whether from window resizing, css layoutshifts or content loads
+  // useEffect(() => {
+  //   const imgElement = imgRef.current;
+  //   if(!imgElement) return;
+
+  //   // Creating the observer instance
+  //   const resizeObserver = new ResizeObserver((entries) => {
+  //     for (let entry of entries){
+  //       // Uses getBoundingClientReact to get exact decimal value
+  //       const rect = entry.target.getBoundingClientRect()
+  //       setCurrentDimensions({
+  //         width: rect.width,
+  //         height: rect.height
+  //       });
+  //     }
+  //   });
+
+  //   // Initialize the observation
+  //   resizeObserver.observe(imgElement);
+
+  //   // Cleanup observer on unmount
+  //   return () => resizeObserver.disconnect();
+  // }, []);
+
+  // Fires when the image successfully loads, sets the current dimensions to a state
+  const onLoadImageHandler = () => {
+    if(imgRef.current){
+      const rect =imgRef.current.getBoundingClientRect();
+      setCurrentDimensions({width: rect.width, height: rect.height});
+    }
+  }
 
   // Set the state when user clicks on the image
   // Includes getting the `pageX` and `pageY` from the event object
@@ -54,6 +88,7 @@ export default function SpecificPicturePage(){
     setShowPopup(prev => !prev);
     setShowErrorMessage(false);
     setShowSuccessMessage(false);
+    setCurrentDimensions({width: rect.width, height: rect.height});
     
 
     // Testing normalizing of coordinates
@@ -83,6 +118,10 @@ export default function SpecificPicturePage(){
 
     const targetTag = data.tags.find(tag => tag.name === userChoice)
     
+    // Converts the correct tag coordinates depending on the image size
+    const targetX = (currentDimensions.width / data.OriginalWidth) * targetTag.x;
+    const targetY = (currentDimensions.height / data.OriginalHeight) * targetTag.y;
+    
 
     console.log("User clicked coordinates:");
     console.log(`X: ${userClickCoords.x}, Y: ${userClickCoords.y}`);
@@ -100,7 +139,7 @@ export default function SpecificPicturePage(){
     console.log("Iterating targeting box object:");
     for(const [key, value] of Object.entries(targetingBoxCoords)) {
       console.log(`Key: ${key}`);
-      for(const [key1, value1] of Object.entries(value)){
+      for(const [key1, value1] of Object.entries(value)){ 
         console.log(`${key1}: ${value1}`);
       }
     }
@@ -108,16 +147,16 @@ export default function SpecificPicturePage(){
     // The actual validation of coordinates
 
     let hit = false;
-    console.log(`${targetingBoxCoords.topLeft.x} < ${targetTag.x} < ${targetingBoxCoords.topRight.x}`)
-    console.log(`${targetingBoxCoords.bottomLeft.x} < ${targetTag.x} < ${targetingBoxCoords.bottomRight.x}`)
-    console.log(`${targetingBoxCoords.topLeft.y} < ${targetTag.y} < ${targetingBoxCoords.bottomLeft.y}`)  
-    console.log(`${targetingBoxCoords.topRight.y} < ${targetTag.y} < ${targetingBoxCoords.bottomRight.y}`)
+    console.log(`${targetingBoxCoords.topLeft.x} < ${targetX} < ${targetingBoxCoords.topRight.x}`)
+    console.log(`${targetingBoxCoords.bottomLeft.x} < ${targetX} < ${targetingBoxCoords.bottomRight.x}`)
+    console.log(`${targetingBoxCoords.topLeft.y} < ${targetY} < ${targetingBoxCoords.bottomLeft.y}`)  
+    console.log(`${targetingBoxCoords.topRight.y} < ${targetY} < ${targetingBoxCoords.bottomRight.y}`)
     
-    if((targetingBoxCoords.topLeft.x <= targetTag.x && targetTag.x <= targetingBoxCoords.topRight.x) &&
-      (targetingBoxCoords.bottomLeft.x <= targetTag.x && targetTag.x <= targetingBoxCoords.bottomRight.x)
+    if((targetingBoxCoords.topLeft.x <= targetX && targetX <= targetingBoxCoords.topRight.x) &&
+      (targetingBoxCoords.bottomLeft.x <= targetX && targetX <= targetingBoxCoords.bottomRight.x)
       ){
-      if(((targetingBoxCoords.topLeft.y <= targetTag.y && targetTag.y <= targetingBoxCoords.bottomLeft.y)) &&
-        (targetingBoxCoords.topRight.y <= targetTag.y && targetTag.y <= targetingBoxCoords.bottomRight.y)){
+      if(((targetingBoxCoords.topLeft.y <= targetY && targetY <= targetingBoxCoords.bottomLeft.y)) &&
+        (targetingBoxCoords.topRight.y <= targetY && targetY <= targetingBoxCoords.bottomRight.y)){
         console.log("Hit 2!!");    
         setFoundElements(prev => [...prev, targetTag.publicId])
         setShowSuccessMessage(true);
@@ -142,6 +181,7 @@ export default function SpecificPicturePage(){
     <div>
       <div className={styles.playArea}>
         <div className={styles.imageContainer}>
+
           <div className={styles.popUpBox} style={{ visibility: showPopup ? 'visible' : 'hidden', top: userClickCoords.y, left: userClickCoords.x}}>
             <div className={styles.targetingBox}/>
             <div className={styles.selectionContainer}>
@@ -160,17 +200,21 @@ export default function SpecificPicturePage(){
             { showSuccessMessage ? <div className={styles.successMsg}>You're guess is correct!</div> : ""}
             { showErrorMessage ? <div className={styles.errorMsg}> Not quite</div> : ""}
           </div>
+
           { data.tags.map(tag => {
-            return foundElements.includes(tag.publicId) ? <div className={styles.testTag} style={{ top: `${(tag.y / data.OriginalHeight) * 100}%`, left: `${(tag.x / data.OriginalWidth) * 100}%` }} onClick={testTagEventHandler}></div> : ""
+            // return foundElements.includes(tag.publicId) ? <div className={styles.testTag} style={{ top: `${(tag.y / data.OriginalHeight) * 100}%`, left: `${(tag.x / data.OriginalWidth) * 100}%` }} onClick={testTagEventHandler}></div> : ""
+            return foundElements.includes(tag.publicId) ? "" : <div className={styles.testTag} style={{ top: `${(tag.y / data.OriginalHeight) * 100}%`, left: `${(tag.x / data.OriginalWidth) * 100}%` }} onClick={testTagEventHandler}></div>
           })}
+
           <div className={styles.elementsList}>
-            <p>Elements to find:</p>
+            <p>Elements to find: </p>
             <ul>
               {data.tags.map((tag) => {
                 return foundElements.includes(tag.publicId) ? <li><s>{tag.name}</s></li> : <li>{tag.name}</li>
               })}
             </ul>
           </div>
+          
           {/* <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div> */}
           <img
             ref={imgRef}
@@ -179,6 +223,7 @@ export default function SpecificPicturePage(){
             height={data.OriginalHeight} 
             alt="Picture of different things"
             onClick={imageClickHandler}
+            onLoad={onLoadImageHandler}
           />
           
         </div>
