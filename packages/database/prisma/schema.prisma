@@ -13,14 +13,15 @@ datasource db {
 }
 
 model Image {
-  id             Int    @id @default(autoincrement())
-  publicId       String @unique @default(uuid()) @map("public_id") @db.Uuid
+  id             Int     @id @default(autoincrement())
+  publicId       String  @unique @default(uuid()) @map("public_id") @db.Uuid
   name           String
   url            String
-  OriginalWidth  Int    @map("original_width")
-  OriginalHeight Int    @map("original_height")
+  OriginalWidth  Int     @map("original_width")
+  OriginalHeight Int     @map("original_height")
   additionalInfo String? @map("additional_info")
   tags           Tag[]
+  scores         Score[]
 
   @@map("images")
 }
@@ -35,4 +36,17 @@ model Tag {
   y           Int
 
   @@map("tags")
+}
+
+model Score {
+  id        Int       @id @default(autoincrement())
+  pubicId   String    @unique @default(uuid()) @map("public_id") @db.Uuid
+  image     Image?    @relation(fields: [imageId], references: [id])
+  imageId   Int?
+  name      String    @default("Anonymous")
+  startTime DateTime  @default(now()) @db.Timestamptz(6)
+  endTime   DateTime? @db.Timestamptz(6)
+  finalTime Decimal?  @db.Decimal(5, 2)
+
+  @@map("scores")
 }

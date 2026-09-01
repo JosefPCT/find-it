@@ -23,8 +23,16 @@
     "db:deploy": { 
       "cache": false
     },
+    "db:seed": {
+      "cache": false,
+      "persistent": false
+    },
+    "db:reset": {
+      "cache": false,
+    },
     "lint": {
       "dependsOn": ["^lint"]
     }
-  }
+  },
+
 }
