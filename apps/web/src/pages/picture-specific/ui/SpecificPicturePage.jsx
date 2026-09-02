@@ -34,6 +34,8 @@ export default function SpecificPicturePage(){
     }
   }
 
+  
+
   // Defining of states
   const [userClickCoords, setUserClickCoords] = useState({x: 0, y: 0});
   const [currentDimensions, setCurrentDimensions] = useState({width: 0, height: 0});
@@ -44,6 +46,17 @@ export default function SpecificPicturePage(){
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const [isWinner, setIsWinner] = useState(false);
+
+  // const [formData, setFormData] = useState({
+  //   picturePublicId: pictureId,
+  //   name: "Anonymous",
+  //   startTime: 0,
+  //   endTime: 0,
+  //   finalTime: 0,
+  // })
+
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
 
   
 
@@ -56,6 +69,7 @@ export default function SpecificPicturePage(){
     const winningCondition = checkWinner(foundElements);
     if (winningCondition){
       setIsWinner(prevState => winningCondition);
+      setEndTime(new Date());
     }
   }, [foundElements])
 
@@ -90,6 +104,7 @@ export default function SpecificPicturePage(){
       const rect =imgRef.current.getBoundingClientRect();
       setCurrentDimensions({width: rect.width, height: rect.height});
     }
+    setStartTime(prev => new Date());
   }
 
   // Set the state when user clicks on the image
@@ -97,6 +112,12 @@ export default function SpecificPicturePage(){
   // And gets the BoundingRect of the image (width, height, top, left etc..)
   // Sets the decimal value of the coordinates by dividing the coordinate with the current width/height
   const imageClickHandler = (e, value) => {
+
+    console.log("Date..");
+    console.log(Date.now())
+    const testDate = new Date();
+    const testTime = testDate.getTime();
+    console.log(testTime);
 
     if(isWinner){
       console.log("you already won!");
@@ -202,6 +223,26 @@ export default function SpecificPicturePage(){
     // isWinningCondition(data)
   }
 
+  const submitFormHandler = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const name = formData.get("username");
+
+    const finalTimeMs = endTime.getTime() - startTime.getTime();
+    const finalTimeSecs = finalTimeMs / 1000;
+    console.log(finalTimeSecs);
+
+    const data = {
+      imagePublicId: pictureId,
+      name: name,
+      startTime: startTime,
+      endTime: endTime,
+      finalTime: finalTimeSecs
+    }
+    console.log(data);
+  }
+
 
   if(isPending){
     return <span>Image is loading...</span>
@@ -257,6 +298,17 @@ export default function SpecificPicturePage(){
               })}
             </ul>
           </div>
+
+          { isWinner ? 
+            <div className={styles.formContainer}>
+              <form onSubmit={submitFormHandler}>
+                <p>You have a high score!</p>
+                <label htmlFor="username">Enter your name:</label>
+                <input type="text" name="username" id="username" minLength={3}/>
+                <button>Submit</button>
+              </form>
+            </div> 
+           : ""}
           
           {/* <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div> */}
           <img
@@ -294,6 +346,14 @@ export default function SpecificPicturePage(){
       </div>
       <div>
         <img src={data.url} alt="" />
+      </div>
+      <div>
+        {/* <p>{formData.picturePublicId}</p>
+        <p>{formData.name}</p>
+        <p>{formData.startTime.toString()}</p>
+        <p>{formData.endTime}</p>
+        <p>{formData.finalTime}</p> */}
+        <p>{startTime.toString()}</p>
       </div>
     </div>
   )
