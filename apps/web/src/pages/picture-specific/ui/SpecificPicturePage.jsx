@@ -59,6 +59,8 @@ export default function SpecificPicturePage(){
 
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
+  const [finalTime, setFinalTime] = useState(0);
+  const [isHighScore, setIsHighScore] = useState(false);
 
   
 
@@ -71,7 +73,20 @@ export default function SpecificPicturePage(){
     const winningCondition = checkWinner(foundElements);
     if (winningCondition){
       setIsWinner(prevState => winningCondition);
-      setEndTime(new Date());
+      const endTimeLocal = new Date();
+      setEndTime(endTimeLocal);
+      console.log("Checking high scores");
+      console.log(data.scores.length < 3);
+      if(data.scores.length < 3){
+        setIsHighScore(true)
+      } else if(data.scores.length >= 3){
+        const currentHighScore = data.scores[2].finalTime;
+        const finalTimeMs = endTimeLocal.getTime() - startTime.getTime();
+        const finalTimeSecs = finalTimeMs / 1000;
+        setFinalTime(finalTimeSecs);
+        parseFloat(currentHighScore) > finalTimeSecs ? setIsHighScore(true) : ""
+      }
+      
     }
   }, [foundElements])
 
@@ -305,10 +320,10 @@ export default function SpecificPicturePage(){
             </ul>
           </div>
 
-          { isWinner ? 
+          { isHighScore ? 
             <div className={styles.formContainer}>
               <form onSubmit={submitFormHandler}>
-                <p>You have a high score!</p>
+                <p>You have a high score! {finalTime}s</p>
                 <label htmlFor="username">Enter your name:</label>
                 <input type="text" name="username" id="username" minLength={3}/>
                 <input type="hidden" name="imageId" id="imageId" value={data.id} />
