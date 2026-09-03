@@ -15,7 +15,7 @@ export const fetchSpecificImage = async(targetPublicId) => {
       scores: {
         take: 3,
         orderBy: {
-          finalTime: 'desc'
+          finalTime: 'asc'
         }
       }
     }

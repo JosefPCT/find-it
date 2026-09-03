@@ -1,8 +1,9 @@
 import { useRef, useState, useEffect } from "react"
 import { useParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import fetchSpecificImage from "../api/fetchSpecificImage";
+import postImageScore from "../api/postImageScore";
 
 import styles from "./SpecificPicturePage.module.css";
 
@@ -10,6 +11,7 @@ import styles from "./SpecificPicturePage.module.css";
 export default function SpecificPicturePage(){
   const { pictureId } = useParams();
   const imgRef = useRef(null);
+  const queryClient = useQueryClient();
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['specificImage', pictureId], 
@@ -223,11 +225,12 @@ export default function SpecificPicturePage(){
     // isWinningCondition(data)
   }
 
-  const submitFormHandler = (e) => {
+  const submitFormHandler = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
     const name = formData.get("username");
+    const imageId = formData.get("imageId");
 
     const finalTimeMs = endTime.getTime() - startTime.getTime();
     const finalTimeSecs = finalTimeMs / 1000;
@@ -235,12 +238,15 @@ export default function SpecificPicturePage(){
 
     const data = {
       imagePublicId: pictureId,
+      imageId: imageId,
       name: name,
       startTime: startTime,
       endTime: endTime,
       finalTime: finalTimeSecs
     }
-    console.log(data);
+    await postImageScore(data);
+
+    await queryClient.invalidateQueries({ queryKey: ['specificImage', pictureId] });
   }
 
 
@@ -305,6 +311,7 @@ export default function SpecificPicturePage(){
                 <p>You have a high score!</p>
                 <label htmlFor="username">Enter your name:</label>
                 <input type="text" name="username" id="username" minLength={3}/>
+                <input type="hidden" name="imageId" id="imageId" value={data.id} />
                 <button>Submit</button>
               </form>
             </div> 
