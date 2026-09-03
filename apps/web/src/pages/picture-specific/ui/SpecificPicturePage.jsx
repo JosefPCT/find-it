@@ -320,16 +320,20 @@ export default function SpecificPicturePage(){
             </ul>
           </div>
 
-          { isHighScore ? 
-            <div className={styles.formContainer}>
-              <form onSubmit={submitFormHandler}>
-                <p>You have a high score! {finalTime}s</p>
-                <label htmlFor="username">Enter your name:</label>
-                <input type="text" name="username" id="username" minLength={3}/>
-                <input type="hidden" name="imageId" id="imageId" value={data.id} />
-                <button>Submit</button>
-              </form>
-            </div> 
+          { isWinner ? 
+            isHighScore ? 
+              <div className={styles.formContainer}>
+                <form onSubmit={submitFormHandler}>
+                  <p>You have a high score! {finalTime}s</p>
+                  <label htmlFor="username">Enter your name:</label>
+                  <input type="text" name="username" id="username" minLength={3}/>
+                  <input type="hidden" name="imageId" id="imageId" value={data.id} />
+                  <button>Submit</button>
+                </form>
+              </div> :
+              <div className={styles.winningMessageContainer}>
+                <p>You won, unfortunately you do not qualify for the high score</p>
+              </div>
            : ""}
           
           {/* <div className={styles.testTag} style={{ top: `${testTagPercentage.y}%`, left: `${testTagPercentage.x}%`}} onClick={testTagEventHandler}></div> */}
