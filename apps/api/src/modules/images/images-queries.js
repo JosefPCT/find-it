@@ -12,7 +12,12 @@ export const fetchSpecificImage = async(targetPublicId) => {
     },
     include: {
       tags: true,
-      scores: true
+      scores: {
+        take: 3,
+        orderBy: {
+          finalTime: 'desc'
+        }
+      }
     }
   })
   return image;

@@ -30,7 +30,7 @@ async function main(){
       },
       scores: {
         create: [
-          { startTime: startTime, endTime: endTime, finalTime: diffms / 1000}
+          { startTime: startTime, endTime: endTime, finalTime: parseFloat(diffms / 1000)}
         ]
       }
     }

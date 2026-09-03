@@ -2,6 +2,7 @@ import express from "express";
 
 import indexRoutes from "../../modules/index/index-route.js";
 import imageRoutes from "../../modules/images/images-route.js";
+import scoreRoutes from "../../modules/images/scores/scores-route.js"
 
 const apiRouter = express.Router();
 
@@ -12,6 +13,7 @@ apiRouter.get('/', (req, res) => {
 
 // Routing
 apiRouter.use('/', indexRoutes);
-apiRouter.use("/images", imageRoutes)
+apiRouter.use("/images", imageRoutes);
+imageRoutes.use('/:imagePublicId/scores', scoreRoutes);
 
 export default apiRouter;
