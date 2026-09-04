@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react"
-import { useParams } from "react-router";
+import { NavLink, useParams } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import fetchSpecificImage from "../api/fetchSpecificImage";
@@ -330,9 +330,18 @@ export default function SpecificPicturePage(){
                   <input type="hidden" name="imageId" id="imageId" value={data.id} />
                   <button>Submit</button>
                 </form>
+                <div>
+                  <a href={`/pictures/${pictureId}`}>Play again?</a>
+                  <NavLink to={`/all`}>Choose another picture</NavLink>
+                </div>
               </div> :
               <div className={styles.winningMessageContainer}>
                 <p>You won, unfortunately you do not qualify for the high score</p>
+                <div>
+                  <a href={`/pictures/${pictureId}`}>Play again?</a>
+                  <NavLink to={`/all`}>Choose another picture</NavLink>
+                </div>
+                
               </div>
            : ""}
           
