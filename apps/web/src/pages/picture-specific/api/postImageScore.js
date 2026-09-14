@@ -1,6 +1,6 @@
 // Updates the current post based on `postPublicId`, updates fields such as 'title', 'text', and 'isPublished'
 export default async function postImageScore(data){
-  const apiUrl = "http://localhost:3000";
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const response = await fetch(`${apiUrl}/api/v1/images/${data.imagePublicId}/scores`, {
     method: 'POST',

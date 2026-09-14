@@ -1,6 +1,7 @@
 import { NavLink } from "react-router"
 
 export default function LandingPage(){
+  const apiUrl = import.meta.env.VITE_API_URL;
   return(
     <>
       Landing Page
@@ -9,6 +10,7 @@ export default function LandingPage(){
       <NavLink to='/all'>
         <button>Choose a picture now!</button>
       </NavLink>
+      <p>{apiUrl}</p>
     </>
   )
 }

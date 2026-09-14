@@ -1,6 +1,6 @@
 export default async function fetchSpecificImage(publicId){
   // TODO: Use an environment variable
-  const apiUrl = "http://localhost:3000";
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const response = await fetch(`${apiUrl}/api/v1/images/${publicId}`);
   if(!response.ok){
