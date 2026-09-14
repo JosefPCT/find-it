@@ -23,20 +23,6 @@ export default function AllPicturesPage(){
     <>
       All Pictures Page
       <ImageCarousel />
-
-      <NavLink to='/pictures/test'>Test Picture</NavLink>
-      <ul>
-        { Array.isArray(data) && data.map((image) => {
-          return (
-            <>
-              <div>{image.name}</div>
-              <div><NavLink to={`/pictures/${image.publicId}`}>To Image</NavLink></div>
-              <div>{image.publicId}</div>
-              <img src={image.url} alt="Test pic" />
-            </>
-          )
-        })}
-      </ul>
     </>
   )
 }

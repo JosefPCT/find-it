@@ -359,37 +359,6 @@ export default function SpecificPicturePage(){
         </div>
         
       </div>
-      <div>
-        Test 
-        <p>User Click Coordinates: X: {userClickCoords.x}, Y: {userClickCoords.y}</p>
-        <p>Showing Popup? {showPopup ? "true" : "false"}</p>
-        {/* <p>User Click Coordinates: X: {userClickCoordsDecimal.x}, Y: {userClickCoordsDecimal.y}</p> */}
-        {foundElements.map((elem) => {
-          return <div>{elem}</div>
-        })}
-        <p>User Params: URL: {pictureId}</p>
-        <p>Data Fetching:</p>
-        <p>{data.name}</p>
-        {data.tags.map((tag) => {
-          return(
-            <>
-              <div>{tag.name}</div>
-              <div>{tag.x}</div>
-            </>
-          )
-        })}
-      </div>
-      <div>
-        <img src={data.url} alt="" />
-      </div>
-      <div>
-        {/* <p>{formData.picturePublicId}</p>
-        <p>{formData.name}</p>
-        <p>{formData.startTime.toString()}</p>
-        <p>{formData.endTime}</p>
-        <p>{formData.finalTime}</p> */}
-        <p>{startTime.toString()}</p>
-      </div>
     </div>
   )
 }
