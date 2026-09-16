@@ -1,0 +1,1 @@
+web: npm run db:deploy && npx turbo run start --filter=@repo/api
