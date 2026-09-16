@@ -3,7 +3,7 @@
   "globalEnv": ["DATABASE_URL"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "^db:generate"],
+      "dependsOn": ["^db:generate", "^build"],
       "outputs": ["dist/**", ".next/**"]
     },
     "dev": {
@@ -29,6 +29,9 @@
     },
     "db:reset": {
       "cache": false,
+    },
+    "start":{
+      "dependsOn": ["db:deploy"]
     },
     "lint": {
       "dependsOn": ["^lint"]

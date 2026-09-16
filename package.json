@@ -6,7 +6,10 @@
   "scripts": {
     "test": "turbo run test",
     "build": "turbo run build",
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "db:generate": "turbo run db:generate",
+    "db:deploy": "turbo run db:deploy",
+    "koyeb:build": "turbo run db:generate && turbo run build"
   },
   "keywords": [],
   "author": "",
