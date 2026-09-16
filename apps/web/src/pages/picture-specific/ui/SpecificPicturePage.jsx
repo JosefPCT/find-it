@@ -360,5 +360,5 @@ export default function SpecificPicturePage(){
         
       </div>
     </div>
-  )
+  ) 
 }
