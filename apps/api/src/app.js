@@ -12,7 +12,7 @@ const allowedOrigins = [
   `http://localhost:5172`,
   `http://localhost:5173`,
   `https://netlify.app`,
-  `https://findit-front.netlify.app/`
+  `https://findit-front.netlify.app`
 ];
 
 const corsOptions = {
