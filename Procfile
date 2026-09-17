@@ -1,1 +1,1 @@
-web: npm run db:deploy && npx turbo run start --filter=@repo/api
+web: pnpm run db:deploy && pnpm turbo run start --filter=@repo/api
